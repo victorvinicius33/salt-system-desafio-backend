@@ -22,13 +22,18 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '2h',
+      expiresIn: '8h',
     });
 
+    const allContacts = await knex('contacts')
+      .where({ user_id: user.id })
+      .returning('*');
+    
     const { password: _, ...userData } = user;
 
     return res.status(200).json({
       user: userData,
+      contacts: allContacts,
       token,
     });
   } catch (error) {

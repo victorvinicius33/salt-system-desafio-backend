@@ -28,6 +28,9 @@ const verifyLogin = async (req, res, next) => {
 
     req.user = user;
 
+    const allUserContacts = await knex('contacts').where({ user_id: user.id }).returning('*');
+    req.user.contacts = allUserContacts;
+
     next();
   } catch (error) {
     return res.status(500).json(error.message);
