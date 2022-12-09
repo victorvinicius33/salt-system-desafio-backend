@@ -13,6 +13,7 @@ routes.post('/user', validation(schemaSignUpUser), users.signUpUser);
 
 routes.post('/login', validation(schemaLogin), login);
 
+
 routes.use(verifyLogin);
 
 routes.get('/user', users.detailUser);

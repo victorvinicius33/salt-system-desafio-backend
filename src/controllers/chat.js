@@ -2,28 +2,19 @@ const knex = require('../services/connection');
 
 //concluido
 const sendMessage = async (req, res) => {
-  const { sent_by, received_by, message_data, time_sent } = req.body;
+  const { room, sent_by, received_by, message_data, time_sent } = req.body;
 
   try {
-    const conversation_room = await knex('conversation_room')
-      .where({
-        first_user_email: sent_by,
-        second_user_email: received_by,
-      })
-      .orWhere({ first_user_email: received_by, second_user_email: sent_by })
-      .first();
-
-    const newMessageData = await knex('message_data')
+    await knex('message_data')
       .insert({
         sent_by,
         received_by,
         message_data,
-        room_id: conversation_room.id,
+        room_id: room,
         time_sent,
-      })
-      .returning('*');
+      });
 
-    return res.status(201).json(newMessageData);
+    return res.status(201).send();
   } catch (error) {
     console.log(error);
   }
@@ -76,8 +67,8 @@ const addContact = async (req, res) => {
 
     await knex('contacts')
       .insert({
-        email: contactToBeAdded.email,
-        name: contactToBeAdded.name,
+        email: req.user.email,
+        name: req.user.name,
         user_id: contactToBeAdded.id,
       })
       .returning('*');
@@ -94,8 +85,8 @@ const addContact = async (req, res) => {
 };
 
 const getAllConversationData = async (req, res) => {
-  const { first_user_email, second_user_email } = req.body;
-
+  const { first_user_email, second_user_email } = req.query;
+  
   try {
     const messageData = await knex('message_data')
       .where({
@@ -103,7 +94,7 @@ const getAllConversationData = async (req, res) => {
         received_by: second_user_email,
       })
       .orWhere({ sent_by: second_user_email, received_by: first_user_email })
-      .select('*');
+      .returning('*');
 
     return res.status(200).json(messageData);
   } catch (error) {
@@ -112,21 +103,19 @@ const getAllConversationData = async (req, res) => {
 };
 
 const getConversationRoom = async (req, res) => {
-  const { first_user_email, second_user_email } = req.body;
+  const { contact } = req.body;
 
   try {
-    const room = await knex('conversation_room')
+    const allChatRooms = await knex('conversation_room')
       .where({
-        first_user_email,
-        second_user_email,
+        first_user_email: req.user.email
       })
       .orWhere({
-        first_user_email: second_user_email,
-        second_user_email: first_user_email,
+        second_user_email: req.user.email,
       })
-      .first();
+      .returning('*');
 
-    return res.status(200).json(room);
+    return res.status(200).json(allChatRooms);
   } catch (error) {
     console.log(error);
   }
