@@ -103,8 +103,6 @@ const getAllConversationData = async (req, res) => {
 };
 
 const getConversationRoom = async (req, res) => {
-  const { contact } = req.body;
-
   try {
     const allChatRooms = await knex('conversation_room')
       .where({

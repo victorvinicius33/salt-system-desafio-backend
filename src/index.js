@@ -20,11 +20,8 @@ app.use(express.json());
 app.use(routes);
 
 io.on('connection', (socket) => {
-  console.log(`User Connected: ${socket.id}`);
-
   socket.on("join_room", (data) => {
     socket.join(data);
-    console.log(`User with ID: ${socket.id} joined room: ${data}`);
   });
 
   socket.on("send_message", (data) => {
@@ -32,6 +29,4 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(process.env.PORT, () => {
-  console.log('server listening on port: ' + process.env.PORT);
-});
+server.listen(process.env.PORT);
