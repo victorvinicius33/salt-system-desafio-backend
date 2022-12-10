@@ -4,16 +4,16 @@ const sendMessage = async (req, res) => {
   const { room, sent_by, received_by, message_data, time_sent } = req.body;
 
   try {
-    await knex('message_data')
+    const messageSent = await knex('message_data')
       .insert({
         sent_by,
         received_by,
         message_data,
         room_id: room,
         time_sent,
-      });
+      }).returning('*');
 
-    return res.status(201).send();
+    return res.status(201).json(messageSent);
   } catch (error) {
     console.log(error);
   }
