@@ -1,6 +1,5 @@
 const knex = require('../services/connection');
 
-//concluido
 const sendMessage = async (req, res) => {
   const { room, sent_by, received_by, message_data, time_sent } = req.body;
 
@@ -20,7 +19,6 @@ const sendMessage = async (req, res) => {
   }
 };
 
-//concluido
 const getAllContacts = async (req, res) => {
   try {
     const allContacts = await knex('contacts')
@@ -33,7 +31,6 @@ const getAllContacts = async (req, res) => {
   }
 };
 
-//concluido
 const addContact = async (req, res) => {
   const { email } = req.body;
 
