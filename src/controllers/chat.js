@@ -11,7 +11,8 @@ const sendMessage = async (req, res) => {
         message_data,
         room_id: room,
         time_sent,
-      }).returning('*');
+      })
+      .returning('*');
 
     return res.status(201).json(messageSent);
   } catch (error) {
@@ -82,15 +83,11 @@ const addContact = async (req, res) => {
 };
 
 const getAllConversationData = async (req, res) => {
-  const { first_user_email, second_user_email } = req.query;
-  
+  const { email } = req.user;
   try {
     const messageData = await knex('message_data')
-      .where({
-        sent_by: first_user_email,
-        received_by: second_user_email,
-      })
-      .orWhere({ sent_by: second_user_email, received_by: first_user_email })
+      .where({ sent_by: email })
+      .orWhere({ received_by: email })
       .returning('*');
 
     return res.status(200).json(messageData);
@@ -103,7 +100,7 @@ const getConversationRoom = async (req, res) => {
   try {
     const allChatRooms = await knex('conversation_room')
       .where({
-        first_user_email: req.user.email
+        first_user_email: req.user.email,
       })
       .orWhere({
         second_user_email: req.user.email,
