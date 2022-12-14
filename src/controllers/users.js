@@ -6,7 +6,7 @@ const signUpUser = async (req, res) => {
 
   try {
     const emailAlreadyExists = await knex('users').where({ email }).first();
-    
+
     if (emailAlreadyExists) {
       return res.status(400).json({
         message:
@@ -24,6 +24,31 @@ const signUpUser = async (req, res) => {
         .status(400)
         .json({ message: 'Não foi possivel cadastrar o usuário.' });
     }
+
+    async function addBotContact() {
+      try {
+        await knex('contacts').insert({
+          email: 'bot@gmail.com',
+          name: 'bot',
+          user_id: newUser[0].id,
+        });
+  
+        await knex('contacts').insert({
+          email,
+          name,
+          user_id: 1,
+        });
+  
+        await knex('conversation_room').insert({
+          first_user_email: email,
+          second_user_email: 'bot@gmail.com',
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    addBotContact();
 
     const { password: _, ...newUserData } = newUser[0];
 
