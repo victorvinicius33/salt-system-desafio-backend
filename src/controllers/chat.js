@@ -1,7 +1,7 @@
 const knex = require('../services/connection');
 
 const sendMessage = async (req, res) => {
-  const { room, sent_by, received_by, message_data, time_sent } = req.body;
+  const { room, sent_by, received_by, message_data } = req.body;
 
   try {
     const messageSent = await knex('message_data')
@@ -10,7 +10,7 @@ const sendMessage = async (req, res) => {
         received_by,
         message_data,
         room_id: room,
-        time_sent,
+        time_sent: new Date(Date.now()),
       })
       .returning('*');
 

@@ -23,6 +23,6 @@ CREATE TABLE message_data (
   sent_by VARCHAR(100),
   received_by VARCHAR(100),
   message_data text,
-  time_sent timestamp NOT NULL,
+  time_sent timestamptz NOT NULL,
   room_id INT REFERENCES conversation_room (id) NOT NULL
 )
