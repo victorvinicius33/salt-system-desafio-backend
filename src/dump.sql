@@ -5,8 +5,6 @@ CREATE TABLE users (
   password text NOT NULL
 )
 
-INSERT INTO users (name, email, password) VALUES ('bot', 'bot@gmail.com', 'bot123')
-
 CREATE TABLE contacts (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,

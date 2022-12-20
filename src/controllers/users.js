@@ -32,13 +32,13 @@ const signUpUser = async (req, res) => {
           name: 'bot',
           user_id: newUser[0].id,
         });
-  
+
         await knex('contacts').insert({
           email,
           name,
           user_id: 1,
         });
-  
+
         await knex('conversation_room').insert({
           first_user_email: email,
           second_user_email: 'bot@gmail.com',
@@ -47,8 +47,9 @@ const signUpUser = async (req, res) => {
         console.log(error);
       }
     }
-
-    addBotContact();
+    if (email !== 'bot@gmail.com') {
+      addBotContact();
+    }
 
     const { password: _, ...newUserData } = newUser[0];
 
