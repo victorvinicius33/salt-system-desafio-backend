@@ -71,12 +71,17 @@ const addContact = async (req, res) => {
       })
       .returning('*');
 
-    await knex('conversation_room').insert({
-      first_user_email: req.user.email,
-      second_user_email: email,
-    });
+    const room = await knex('conversation_room')
+      .insert({
+        first_user_email: req.user.email,
+        second_user_email: email,
+      })
+      .returning('*');
 
-    return res.status(201).json(newContact);
+    newContact[0].roomId = room[0].id;
+    newContact[0].contactId = contactToBeAdded.id;
+
+    return res.status(201).json(newContact[0]);
   } catch (error) {
     console.log(error);
   }
